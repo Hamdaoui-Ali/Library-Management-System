@@ -67,6 +67,4 @@ public class Book {
 	public void setBorrowed(boolean isBorrowed) {
 		this.isBorrowed = isBorrowed;
 	}
-    
-    // Validation Methods (e.g., validateTitle)
 }
