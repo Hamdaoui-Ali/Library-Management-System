@@ -3,6 +3,7 @@ package Controller;
 import Model.*;
 import Util.CSVHandler;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,44 +11,66 @@ import java.util.List;
 public class UserController {
     private List<User> users = new ArrayList<>();
     private static final String USER_FILE = "resources/users.csv";
+    private int lastUserId = 0;
 
     public UserController() {
         loadUsersFromFile();
     }
 
-    // Load users from CSV file
+    // Générer un nouvel ID utilisateur unique
+    private int generateNewUserId() {
+        return ++lastUserId; // Incrémenter et retourner
+    }
+
+    // Charger les utilisateurs depuis un fichier CSV
     private void loadUsersFromFile() {
+        File file = new File(USER_FILE);
+        if (!file.exists()) {
+            System.out.println("User file does not exist. Initializing with an empty list.");
+            return; // Pas d'utilisateur à charger
+        }
+
         try {
             List<String[]> data = CSVHandler.readCSV(USER_FILE);
             for (String[] row : data) {
-                int id = Integer.parseInt(row[0]);
-                String name = row[1];
-                String email = row[2];
-                String password = row[3];
-                String role = row[4];
+                try {
+                    User user = createUserFromData(row);
+                    users.add(user);
 
-                User user;
-                switch (role) {
-                    case "Member":
-                        user = new Member(id, name, email, password);
-                        break;
-                    case "Librarian":
-                        user = new Librarian(id, name, email, password);
-                        break;
-                    case "Admin":
-                        user = new Admin(id, name, email, password);
-                        break;
-                    default:
-                        throw new IllegalArgumentException("Unknown role: " + role);
+                    // Mettre à jour le dernier ID utilisé
+                    if (user.getId() > lastUserId) {
+                        lastUserId = user.getId();
+                    }
+                } catch (Exception e) {
+                    System.out.println("Skipping malformed line: " + String.join(",", row));
                 }
-                users.add(user);
             }
         } catch (IOException e) {
-            System.out.println("Error reading users from file: " + e.getMessage());
+            System.out.println("Error loading users: " + e.getMessage());
         }
     }
 
-    // Save users to CSV file
+    // Créer un utilisateur à partir des données CSV
+    private User createUserFromData(String[] row) {
+        int id = Integer.parseInt(row[0]);
+        String name = row[1];
+        String email = row[2];
+        String password = row[3];
+        String role = row[4];
+
+        switch (role) {
+            case "Member":
+                return new Member(id, name, email, password);
+            case "Librarian":
+                return new Librarian(id, name, email, password);
+            case "Admin":
+                return new Admin(id, name, email, password);
+            default:
+                throw new IllegalArgumentException("Unknown role: " + role);
+        }
+    }
+
+    // Sauvegarder les utilisateurs dans un fichier CSV
     public void saveUsersToFile() {
         List<String[]> data = new ArrayList<>();
         for (User user : users) {
@@ -66,14 +89,61 @@ public class UserController {
         }
     }
 
-    // Add a new user
+    // Ajouter un nouvel utilisateur
     public void addUser(User user) {
         users.add(user);
         saveUsersToFile();
     }
 
-    // Get all users
+    // Obtenir tous les utilisateurs
     public List<User> getAllUsers() {
         return users;
     }
+
+    // Supprimer un utilisateur
+    public void deleteUser(int id) {
+        boolean removed = users.removeIf(user -> user.getId() == id);
+        if (removed) {
+            saveUsersToFile();
+            System.out.println("User with ID " + id + " deleted successfully.");
+        } else {
+            System.out.println("User with ID " + id + " not found.");
+        }
+    }
+
+    // Vérifier si un ID existe
+    public boolean isIdExists(int id) {
+        for (User user : users) {
+            if (user.getId() == id) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Ajouter un utilisateur avec un ID généré automatiquement
+    public void addUserWithGeneratedId(String name, String email, String password, String role) {
+        int newId = generateNewUserId(); // Générer automatiquement un nouvel ID
+        User user;
+        switch (role) {
+            case "Member":
+                user = new Member(newId, name, email, password);
+                break;
+            case "Librarian":
+                user = new Librarian(newId, name, email, password);
+                break;
+            case "Admin":
+                user = new Admin(newId, name, email, password);
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown role: " + role);
+        }
+        addUser(user);
+        System.out.println("User with ID " + newId + " added successfully.");
+    }
+
+
+    public int getNextUserId() {
+    	return lastUserId + 1;
+}
 }
