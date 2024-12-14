@@ -1,4 +1,4 @@
-package devoir;
+package Model;
 
 public class Member extends User {
     public Member(int id, String name, String email, String password) {
