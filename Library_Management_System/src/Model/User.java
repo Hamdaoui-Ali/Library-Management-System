@@ -1,13 +1,16 @@
 package Model;
 
-	public abstract class User {
+import java.util.List;
+
+public abstract class User {
 	    private int id;
 	    private String name;
 	    private String email;
 	    private String password; // Hashed password
+	    private String role;
 
 	    // Constructor
-	    public User(int id, String name, String email, String password) {
+	    public User(int id, String name, String email, String password,String role) {
 	        if (!isValidEmail(email)) {
 	            throw new IllegalArgumentException("Invalid email format");
 	        }
@@ -15,7 +18,10 @@ package Model;
 	        this.name = name;
 	        this.email = email;
 	        this.password = password;
+	        this.role=role;
 	    }
+	    
+	    public abstract List<String> getAvailableOptions();
 
 	    // Getters and Setters
 	    public int getId() {
@@ -52,9 +58,17 @@ package Model;
 	    public void setPassword(String password) {
 	        this.password = password;
 	    }
+	    
+	    public String getRole() {
+	        return role;
+	    }
 
-	    // Abstract method for specific behavior
-	    public abstract String getRole();
+	    public void setRole(String role) {
+	    	this.role=role;
+	    	
+	    }
+	    
+	    
 
 	    @Override
 	    public String toString() {
