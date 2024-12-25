@@ -146,4 +146,52 @@ public class UserController {
     public int getNextUserId() {
     	return lastUserId + 1;
 }
+    public boolean validateUser(String email, String password) {
+        return users.stream().anyMatch(user -> user.getEmail().equals(email) && user.getPassword().equals(password));
+    }
+    
+    public User validateAndGetUser(String email, String password) {
+        return users.stream()
+                .filter(user -> user.getEmail().equals(email) && user.getPassword().equals(password))
+                .findFirst()
+                .orElse(null);
+    }
+    
+    public void updateUser(int id, String name, String email, String password, String role) {
+        for (User user : users) {
+            if (user.getId() == id) {
+                user.setName(name);
+                user.setEmail(email);
+                user.setPassword(password);
+                if (user instanceof Admin && role.equals("Admin")) {
+                    // No role change needed
+                } else if (user instanceof Librarian && role.equals("Librarian")) {
+                    // No role change needed
+                } else if (user instanceof Member && role.equals("Member")) {
+                    // No role change needed
+                } else {
+                    // Handle role change
+                    users.remove(user);
+                    switch (role) {
+                        case "Admin":
+                            user = new Admin(id, name, email, password);
+                            break;
+                        case "Librarian":
+                            user = new Librarian(id, name, email, password);
+                            break;
+                        case "Member":
+                            user = new Member(id, name, email, password);
+                            break;
+                        default:
+                            throw new IllegalArgumentException("Invalid role");
+                    }
+                    users.add(user);
+                }
+                saveUsersToFile();
+                return;
+            }
+        }
+        throw new IllegalArgumentException("User with ID " + id + " not found.");
+    }
+
 }
