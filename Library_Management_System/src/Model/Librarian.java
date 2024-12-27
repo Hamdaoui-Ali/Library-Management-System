@@ -1,12 +1,15 @@
-package Model;
+package model;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class Librarian extends User {
-    public Librarian(int id, String name, String email, String password) {
-        super(id, name, email, password);
-    }
 
-    @Override
-    public String getRole() {
-        return "Librarian";
-    }
+	public Librarian(int id, String nom, String prenom, String cin, int age,String mail, String telephone,
+			String adresse) {
+		super(id, nom, prenom, cin, age,mail, telephone, adresse);
+		// TODO Auto-generated constructor stub
+	}
+  
+
 }
