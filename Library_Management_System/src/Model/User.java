@@ -1,89 +1,59 @@
-package Model;
-
-import java.util.List;
+package model;
 
 public abstract class User {
-	    private int id;
-	    private String name;
-	    private String email;
-	    private String password; // Hashed password
-	    private String role;
+    private int id;
+    private String nom;
+    private String prenom;
+    private String cin;
+    private int age;
+    private String mail;
+    private String telephone;
+    private String adresse;
 
-	    // Constructor
-	    public User(int id, String name, String email, String password,String role) {
-	        if (!isValidEmail(email)) {
-	            throw new IllegalArgumentException("Invalid email format");
-	        }
-	        this.id = id;
-	        this.name = name;
-	        this.email = email;
-	        this.password = password;
-	        this.role=role;
-	    }
-	    
-	    public abstract List<String> getAvailableOptions();
+    public User(int id, String nom, String prenom, String cin, int age, String mail, String telephone, String adresse) {
+        if (!isValidEmail(mail)) {
+            throw new IllegalArgumentException("Invalid email format");
+        }
+        this.id = id;
+        this.nom = nom;
+        this.prenom = prenom;
+        this.cin = cin;
+        this.age = age;
+        this.mail = mail;
+        this.telephone = telephone;
+        this.adresse = adresse;
+    }
 
-	    // Getters and Setters
-	    public int getId() {
-	        return id;
-	    }
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
 
-	    public void setId(int id) {
-	        this.id = id;
-	    }
+    public String getNom() { return nom; }
+    public void setNom(String nom) { this.nom = nom; }
 
-	    public String getName() {
-	        return name;
-	    }
+    public String getPrenom() { return prenom; }
+    public void setPrenom(String prenom) { this.prenom = prenom; }
 
-	    public void setName(String name) {
-	        this.name = name;
-	    }
+    public String getCin() { return cin; }
+    public void setCin(String cin) { this.cin = cin; }
 
-	    public String getEmail() {
-	        return email;
-	    }
+    public int getAge() { return age; }
+    public void setAge(int age) { this.age = age; }
 
-	    public void setEmail(String email) {
-	        if (!isValidEmail(email)) {
-	            throw new IllegalArgumentException("Invalid email format");
-	        }
-	        this.email = email;
-	    }
+    public String getMail() { return mail; }
+    public void setMail(String mail) {
+        if (!isValidEmail(mail)) {
+            throw new IllegalArgumentException("Invalid email format");
+        }
+        this.mail = mail;
+    }
 
-	    public String getPassword() {
-	        return password;
-	    }
+    public String getTelephone() { return telephone; }
+    public void setTelephone(String telephone) { this.telephone = telephone; }
 
-	    public void setPassword(String password) {
-	        this.password = password;
-	    }
-	    
-	    public String getRole() {
-	        return role;
-	    }
+    public String getAdresse() { return adresse; }
+    public void setAdresse(String adresse) { this.adresse = adresse; }
 
-	    public void setRole(String role) {
-	    	this.role=role;
-	    	
-	    }
-	    
-	    
-
-	    @Override
-	    public String toString() {
-	        return "User{" +
-	                "id=" + id +
-	                "; name='" + name + '\'' +
-	                "; email='" + email + '\'' +
-	                "; role=" + getRole() +
-	                '}';
-	    }
-
-	    // Helper method for email validation
-	    private boolean isValidEmail(String email) {
-	        return email != null && email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$");
-	    }
-	}
-
-
+    private boolean isValidEmail(String mail) {
+        return mail != null && mail.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$");
+    }
+}
